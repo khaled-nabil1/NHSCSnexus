@@ -125,8 +125,12 @@ const Hero = () => {
         <p className="text-lg md:text-2xl text-cyber-blue max-w-3xl text-center leading-relaxed backdrop-blur-sm py-3 md:py-4 px-4 md:px-6 rounded-lg bg-cyber-black/30">
           Collection of studying resources used in 
           <span className="font-bold block mt-1 md:mt-2 flex items-center justify-center">
-            National Higher School of Cyber Security
-            <span className="ml-2 w-3 h-6 bg-cyber-blue inline-block animate-caret"></span>
+            <span className="text-base md:text-2xl">
+              National Higher School of Cyber Security
+            </span>
+            {!isMobile && (
+              <span className="ml-2 w-3 h-6 bg-cyber-blue inline-block animate-caret"></span>
+            )}
           </span>
         </p>
 

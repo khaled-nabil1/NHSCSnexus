@@ -42,9 +42,9 @@ const CategorySection = ({ title, cards }) => {
           rel="noopener noreferrer"
           className={`group block ${getSemesterLink(title, 0) === '#' ? 'cursor-not-allowed' : ''}`}
         >
-          <h2 className="text-3xl font-bold text-cyber-green mb-8 flex items-center group-hover:text-cyber-blue transition-all duration-200">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-cyber-green mb-8 flex items-center group-hover:text-cyber-blue transition-all duration-200">
             <span className="mr-3 text-cyber-blue animate-pulse">&gt;</span>
-            <span className="whitespace-nowrap">{getTitleText(title)}</span>
+            <span className="whitespace-normal sm:whitespace-nowrap">{getTitleText(title)}</span>
             <div className="h-[2px] flex-grow ml-4 bg-gradient-to-r from-cyber-green to-transparent"></div>
             <span className="ml-2 opacity-0 group-hover:opacity-100 transition-all duration-200">→</span>
           </h2>
@@ -95,7 +95,7 @@ const CategorySection = ({ title, cards }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`
-                      group flex items-center text-cyber-green hover:text-cyber-blue 
+                      group flex items-center text-sm sm:text-base text-cyber-green hover:text-cyber-blue 
                       transition-all duration-200 py-1 px-2 rounded-md
                       ${link.title === 'UNKNOWN' || link.url === '#'
                         ? 'opacity-50 cursor-not-allowed' 

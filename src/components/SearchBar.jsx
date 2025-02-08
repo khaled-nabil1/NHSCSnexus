@@ -77,7 +77,7 @@ const SearchBar = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="flex-1 bg-transparent text-cyber-green focus:outline-none font-mono placeholder-cyber-green/50"
-              placeholder="Enter search query..."
+              placeholder="Enter file name..."
             />
             <button
               type="submit"
