@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  background-color: theme('colors.cyber-black');
+  color: theme('colors.cyber-green');
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 0.3px;
+}
+
+/* Make sure all text inputs use Share Tech Mono */
+input, button, textarea {
+  font-family: 'Share Tech Mono', monospace;
+}
+
+@keyframes matrixRain {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+.matrix-line {
+  animation: matrixRain 20s linear infinite;
+  opacity: 0.5;
+}
+
+.matrix-line:nth-child(even) {
+  animation-duration: 25s;
+}
+
+.matrix-line:nth-child(3n) {
+  animation-duration: 30s;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+.typing-animation {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typing 2s steps(40, end);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: theme('colors.cyber-black');
+}
+
+::-webkit-scrollbar-thumb {
+  background: theme('colors.cyber-green');
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: theme('colors.cyber-blue');
+}
+
+/* Selection styling */
+::selection {
+  background: theme('colors.cyber-blue');
+  color: theme('colors.cyber-black');
+}
+
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+    text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+    text-shadow: 2px 2px #00ff9d, -2px -2px #00f3ff;
+  }
+  40% {
+    transform: translate(-2px, -2px);
+    text-shadow: 2px -2px #00ff9d, -2px 2px #00f3ff;
+  }
+  60% {
+    transform: translate(2px, 2px);
+    text-shadow: -2px 2px #00ff9d, 2px -2px #00f3ff;
+  }
+  80% {
+    transform: translate(2px, -2px);
+    text-shadow: -2px -2px #00ff9d, 2px 2px #00f3ff;
+  }
+  100% {
+    transform: translate(0);
+    text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
+  }
+}
+
+.animate-glitch {
+  animation: glitch 0.3s linear;
+}
+
+/* Add a subtle pulse animation for cyber elements */
+@keyframes cyber-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.cyber-pulse {
+  animation: cyber-pulse 2s ease-in-out infinite;
+}
+
+/* Enhanced glow effects */
+.glow-text {
+  text-shadow: 0 0 10px currentColor;
+}
+
+.glow-border {
+  box-shadow: 0 0 15px rgba(0, 255, 157, 0.3);
+}
+
+/* Pulse animation enhancement */
+@keyframes enhanced-pulse {
+  0%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 10px currentColor;
+  }
+  50% {
+    opacity: 0.7;
+    text-shadow: 0 0 20px currentColor;
+  }
+}
+
+.animate-enhanced-pulse {
+  animation: enhanced-pulse 2s ease-in-out infinite;
+}
+
+/* Add this to your existing animations */
+@keyframes caret-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.animate-caret {
+  animation: caret-blink 1s step-end infinite;
+}
