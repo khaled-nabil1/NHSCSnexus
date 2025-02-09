@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { searchDriveFiles } from '../services/driveService';
+import { useState, useEffect } from 'react';
+import { searchDriveFiles, refreshCache } from '../services/driveService';
 
 const SearchIcon = () => (
   <svg
@@ -20,29 +20,49 @@ const SearchIcon = () => (
 
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchResults, setSearchResults] = useState([]);
   const [error, setError] = useState(null);
+  const [isCacheReady, setIsCacheReady] = useState(false);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
+  useEffect(() => {
+    const initializeCache = async () => {
+      try {
+        await refreshCache();
+        setIsCacheReady(true);
+      } catch (error) {
+        setError('Failed to initialize search. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    setIsLoading(true);
-    setError(null);
+    initializeCache();
+  }, []);
 
-    try {
-      console.log('Searching for:', searchQuery); // Debug log
-      const results = await searchDriveFiles(searchQuery);
-      console.log('Search results:', results); // Debug log
-      setSearchResults(results);
-    } catch (error) {
-      console.error('Search error:', error); // Debug log
-      setError(error.message);
-      setSearchResults([]);
-    } finally {
-      setIsLoading(false);
-    }
+  useEffect(() => {
+    if (!isCacheReady) return;
+
+    const debounceTimeout = setTimeout(() => {
+      if (searchQuery.trim()) {
+        try {
+          const results = searchDriveFiles(searchQuery);
+          setSearchResults(results);
+        } catch (error) {
+          console.error('Search error:', error);
+          setError(error.message);
+          setSearchResults([]);
+        }
+      } else {
+        setSearchResults([]);
+      }
+    }, 300);
+
+    return () => clearTimeout(debounceTimeout);
+  }, [searchQuery, isCacheReady]);
+
+  const handleInputChange = (e) => {
+    setSearchQuery(e.target.value);
   };
 
   return (
@@ -69,29 +89,21 @@ const SearchBar = () => {
           <span className="typing-animation">search_files</span>
         </div>
 
-        <form onSubmit={handleSearch} className="relative">
+        <div className="relative">
           <div className="flex items-center bg-black/30 rounded-lg border-2 border-cyber-green focus-within:border-cyber-blue focus-within:shadow-[0_0_15px_rgba(0,243,255,0.3)] p-2 transition-all duration-300">
             <span className="text-cyber-green mr-2 font-mono animate-pulse">&gt;</span>
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleInputChange}
               className="flex-1 bg-transparent text-cyber-green focus:outline-none font-mono placeholder-cyber-green/50"
               placeholder="Enter file name..."
             />
-            <button
-              type="submit"
-              className={`
-                ml-2 p-2 text-cyber-green hover:text-cyber-blue transition-all
-                rounded-md hover:bg-cyber-blue/10 hover:shadow-[0_0_10px_rgba(0,243,255,0.3)]
-                ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}
-              `}
-              disabled={isLoading}
-            >
+            <div className="ml-2 p-2 text-cyber-green">
               <SearchIcon />
-            </button>
+            </div>
           </div>
-        </form>
+        </div>
 
         {error && (
           <div className="mt-4 text-red-500 font-mono p-2 border-2 border-red-500 rounded-md shadow-[0_0_10px_rgba(255,0,0,0.2)]">
@@ -100,43 +112,38 @@ const SearchBar = () => {
           </div>
         )}
 
-        {isLoading ? (
+        {isLoading && searchQuery ? (
           <div className="mt-4 text-cyber-blue font-mono animate-pulse">
             <span className="mr-2">&gt;</span>
             Searching files...
           </div>
         ) : searchResults.length > 0 ? (
-          <div className="mt-4 space-y-4">
-            {/* Group results by section */}
-            {['S1', 'S2'].map(section => {
-              const sectionResults = searchResults.filter(result => result.section === section);
-              if (sectionResults.length === 0) return null;
-
-              return (
-                <div key={section} className="space-y-2">
-                  <h3 className="text-cyber-blue font-mono">
-                    <span className="mr-2">#</span>
-                    {section}
-                  </h3>
-                  {sectionResults.map((result) => (
-                    <div
-                      key={result.id}
-                      className="flex items-center text-cyber-green hover:text-cyber-blue transition-colors ml-4"
-                    >
-                      <span className="mr-2 font-mono">-</span>
-                      <a 
-                        href={result.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="hover:underline"
-                      >
+          <div className="mt-4 max-h-[400px] overflow-y-auto custom-scrollbar">
+            <div className="space-y-4 pr-4">
+              {searchResults.map((result) => (
+                <a
+                  key={result.id}
+                  href={result.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block text-cyber-green transition-all duration-200 hover:text-cyber-blue hover:bg-cyber-blue/10 rounded-md hover:shadow-[0_0_10px_rgba(0,243,255,0.2)] hover:translate-x-2"
+                >
+                  <div className="flex flex-col p-2">
+                    <div className="flex items-center">
+                      <span className="mr-2 opacity-75 font-mono">-</span>
+                      <span>
                         {result.name}
-                      </a>
+                      </span>
                     </div>
-                  ))}
-                </div>
-              );
-            })}
+                    {result.path && (
+                      <div className="ml-6 text-sm text-cyber-green/60 font-mono group-hover:text-cyber-blue/60">
+                        {result.path}
+                      </div>
+                    )}
+                  </div>
+                </a>
+              ))}
+            </div>
           </div>
         ) : searchQuery && !isLoading && (
           <div className="mt-4 text-cyber-green font-mono">
