@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import matrixBg from '../assets/matrix-bg.jpg'; // Make sure to add the image to your assets
+import matrixBg from '../assets/matrix-bg.jpg'; 
 
 const Hero = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
